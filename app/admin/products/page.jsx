@@ -15,7 +15,7 @@ const productSchema = z.object({
     .min(0, 'Price must be positive'),
 })
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://causal-scarab-455004-u9.df.r.appspot.com/api';
 
 export default function ProductPage() {
   const [products, setProducts] = useState([])

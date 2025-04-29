@@ -1,8 +1,10 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, createContext, useContext } from 'react';
 import { useRouter } from 'next/navigation';
-import CartContext from './CartContext';
+
+// Create the CartContext
+const CartContext = createContext();
 
 export function CartProvider({ children }) {
   const [cartItems, setCartItems] = useState([]);
@@ -32,7 +34,9 @@ export function CartProvider({ children }) {
       const savedCart = localStorage.getItem('cart');
       if (savedCart) {
         try {
-          setCartItems(JSON.parse(savedCart));
+          const parsedCart = JSON.parse(savedCart);
+          console.log("Loading cart from localStorage:", parsedCart);
+          setCartItems(parsedCart);
         } catch (e) {
           console.error('Failed to parse cart from localStorage', e);
         }
@@ -41,21 +45,11 @@ export function CartProvider({ children }) {
   }, []);
 
   // Save cart to localStorage whenever it changes
- // In CartProvider.jsx, update the useEffect for loading from localStorage
-useEffect(() => {
-  if (typeof window !== 'undefined') {
-    const savedCart = localStorage.getItem('cart');
-    if (savedCart) {
-      try {
-        const parsedCart = JSON.parse(savedCart);
-        console.log("Loading cart from localStorage:", parsedCart);
-        setCartItems(parsedCart);
-      } catch (e) {
-        console.error('Failed to parse cart from localStorage', e);
-      }
+  useEffect(() => {
+    if (mounted && typeof window !== 'undefined') {
+      localStorage.setItem('cart', JSON.stringify(cartItems));
     }
-  }
-}, []); // Only run on mount
+  }, [cartItems, mounted]);
 
   // Cart functions
   const openCart = () => setIsOpen(true);
@@ -122,23 +116,35 @@ useEffect(() => {
     }
   }, [cartItems.length, mounted, router]);
 
-  // Context value
+  // Context value - make sure property names match what PaymentForm expects
   const value = {
-    cartItems,
+    cartItems,       // Used in PaymentForm
+    cart: cartItems, // Alternative name
     cartCount,
-    cartTotal,
+    cartTotal,      // Used in PaymentForm
     isOpen,
     openCart,
     closeCart,
     addItem,
     removeItem,
     updateItemQuantity,
-    clearCart,
-    handleCheckout
+    clearCart,      // Used in PaymentForm
+    handleCheckout,
+    // Additional methods that match names in PaymentForm useCart() hook
+    getCartTotal: () => cartTotal,
+    getCartItemsCount: () => cartCount
   };
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }
 
-// Re-export the useCart hook for convenience
-export { useCart } from './CartContext';
+// Create and export the useCart hook
+export function useCart() {
+  const context = useContext(CartContext);
+  if (context === undefined) {
+    throw new Error('useCart must be used within a CartProvider');
+  }
+  return context;
+}
+
+export default CartProvider;

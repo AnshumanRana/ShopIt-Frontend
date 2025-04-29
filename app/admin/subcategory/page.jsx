@@ -11,7 +11,7 @@ const subcategorySchema = z.object({
   categoryId: z.string().min(1, 'Please select a parent category'),
 })
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://causal-scarab-455004-u9.df.r.appspot.com/api';
 
 export default function SubcategoryPage() {
   const [subcategories, setSubcategories] = useState([])

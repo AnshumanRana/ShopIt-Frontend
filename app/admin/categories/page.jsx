@@ -10,7 +10,7 @@ const categorySchema = z.object({
   name: z.string().min(1, 'Category name is required'),
 })
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://causal-scarab-455004-u9.df.r.appspot.com';
 
 export default function CategoryPage() {
   const [categories, setCategories] = useState([])
@@ -56,7 +56,7 @@ export default function CategoryPage() {
       if (editingIndex !== null) {
         // Update existing category
         const categoryId = categories[editingIndex].id
-        const response = await fetch(`${API_URL}/categories/${categoryId}`, {
+        const response = await fetch(`${NEXT_PUBLIC_API_URL}/categories/${categoryId}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',

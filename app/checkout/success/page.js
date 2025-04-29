@@ -25,9 +25,7 @@ const OrderSuccessPage = () => {
         </div>
         
         <div className="flex flex-col space-y-3">
-          <Link href="/orders" className="block w-full py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition">
-            View Order
-          </Link>
+          
           <Link href="/" className="block w-full py-3 bg-gray-200 text-black rounded-md hover:bg-gray-300 transition">
             Continue Shopping
           </Link>
